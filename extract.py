@@ -89,11 +89,13 @@ def cut_videos(saveto, sign_name, start_time, end_time):
     file_name = sign_name
     new_file_name = sign_name + str(file_count)
 
+    d_time = reformat_time((end_time - start_time))
     start_time = reformat_time(start_time)
     end_time = reformat_time(end_time)
+
            
 
-    ffm_cmd = "ffmpeg -ss {} -i {} -to {} -an -c copy {}".format(start_time, saveto + "/" + sign_name + "/" + file_name + "." + "mp4", end_time, saveto + "/" + sign_name + "/" + new_file_name + ".mp4")
+    ffm_cmd = "ffmpeg -ss {} -t {} -i {}  -an -c copy {}".format(start_time, d_time, saveto + "/" + sign_name + "/" + file_name + "." + "mp4", saveto + "/" + sign_name + "/" + new_file_name + ".mp4")
     os.system(ffm_cmd)
     # os.remove(saveto + "/" + sign_name + "/" + file_name + "." + "mp4")
 
