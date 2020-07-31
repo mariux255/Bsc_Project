@@ -30,6 +30,8 @@ def download_yt_videos(indexfile):
 
         if not os.path.exists(saveto + "/" + sign_name):
             os.mkdir(saveto + "/" + sign_name)
+        else:
+            continue
 
 
         ydl_opts = {'outtmpl' : '{}'.format(saveto + "/" + sign_name + "/" + file_name)}
@@ -59,6 +61,7 @@ def download_yt_videos(indexfile):
 def cut_videos(indexfile):
     content = json.load(open(indexfile))
     prev_sign_name = ""
+    r = 0
     saveto = "raw_videos"
     for entry in content:
 
@@ -67,9 +70,13 @@ def cut_videos(indexfile):
 
         start_time = entry['start_time']
         end_time = entry['end_time']
-
-        _, _, files = next(os.walk("{}".format(saveto + "/" + sign_name + "/")))
-        file_count = len(files)
+        try:
+            _, _, files = next(os.walk("{}".format(saveto + "/" + sign_name + "/")))
+            file_count = len(files)
+        except:
+            print("MADNESS")
+            file_count= r + 100
+            r = r+1
         file_name = sign_name
         new_file_name = sign_name + str(file_count)
 
@@ -79,8 +86,8 @@ def cut_videos(indexfile):
             except:
                 pass
 
-
-        if int(start_time)>=10 :
+        print(sign_name)
+        if int(start_time)>=10 and int(start_time) < 60 :
             start_time = "00:00:{}".format(start_time)
         elif int(start_time)>=60 :
             hours = start_time // 3600
@@ -95,7 +102,7 @@ def cut_videos(indexfile):
         else:
             start_time = "00:00:0{}".format(start_time)
         
-        if int(end_time)>=10 :
+        if int(end_time)>=10 and int(end_time) < 60:
             end_time = "00:00:{}".format(end_time)
         elif int(end_time)>=60 :
             hours = end_time // 3600
@@ -110,7 +117,7 @@ def cut_videos(indexfile):
             end_time = "00:00:0{}".format(end_time)
         
         try:
-            ffm_cmd = "ffmpeg -ss {} -to {} -i {} -an -c copy {}".format(start_time, end_time, saveto + "/" + sign_name + "/" + file_name + "." + "mp4", saveto + "/" + sign_name + "/" + new_file_name + ".mp4")
+            ffm_cmd = "ffmpeg -ss {} -i {} -to {} -an -c copy {}".format(start_time, saveto + "/" + sign_name + "/" + file_name + "." + "mp4", end_time, saveto + "/" + sign_name + "/" + new_file_name + ".mp4")
             os.system(ffm_cmd)
             # os.remove(saveto + "/" + sign_name + "/" + file_name + "." + "mp4")
         except:
