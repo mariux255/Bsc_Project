@@ -9,6 +9,7 @@ import random
 from multiprocessing.dummy import Pool
 
 def download_yt_videos(indexfile):
+    failed_list = []
     prev_url = ""
     prev_sign_name = ""
     prev_file_name = ""
@@ -44,6 +45,7 @@ def download_yt_videos(indexfile):
             try:
                 cut_videos(saveto,sign_name,start_time, end_time)
             except:
+                failed_list.append(sign_name)
                 continue
 
             try:
@@ -54,6 +56,7 @@ def download_yt_videos(indexfile):
         prev_sign_name = sign_name
         prev_file_name = sign_name
         prev_url = video_url
+    print(failed_list)
 
 
 def download_video(video_url, sign_name, file_name, saveto):
